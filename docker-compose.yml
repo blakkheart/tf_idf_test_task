@@ -17,5 +17,14 @@ services:
       interval: 1s
       timeout: 3s
       retries: 5
+
+  backend:
+    build: ./
+    env_file: .env
+    depends_on:
+      redis:
+        condition: service_healthy
+    command:
+      ["uvicorn", "src.main:app", "--proxy-headers", "--host", "0.0.0.0", "--port", "8000" ]
     ports:
-      - 127.0.0.1:6379:6379
+      - 127.0.0.1:8000:8000
